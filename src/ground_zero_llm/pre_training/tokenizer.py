@@ -17,8 +17,7 @@ import re
 
 # ----------------- Module-level Configuration -----------------
 
-
-class SimpleTokenizerV1:
+class SimpleTokenizer:
     def __init__(self, vocab):
         self.str_to_int = vocab
         self.int_to_str = {i:s for s, i in vocab.items()}
@@ -26,8 +25,9 @@ class SimpleTokenizerV1:
     def encode(self, text):
         preprocessed = re.split(r'([,.?!"()\']|--|\s)', text)
         preprocessed = [ item.strip() for item in preprocessed if item.strip()]
+        preprocessed = [item if item in self.str_to_int else "<|unk|>" for item in preprocessed]
 
-        ids = {self.str_to_int[s] for s in preprocessed}
+        ids = [self.str_to_int[s] for s in preprocessed]
         return ids
     
     def decode(self, ids):
